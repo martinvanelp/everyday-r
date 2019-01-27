@@ -1,0 +1,191 @@
+Vervangen Excel copy-paste straten
+========================================================
+author: Martin van Elp
+date: 2019-01-27
+autosize: true
+
+
+Agenda
+========================================================
+
+1. Beginsituatie
+2. Inlezen
+3. Bewerken
+4. Wegschrijven
+5. Disclaimer
+6. Oefenen (facultatief)
+
+
+Beginsituatie
+========================================================
+
+Stereotype verwerking met Excel:
+
+- Levering van een bestand (map, e-mail, ...)
+- Bestand openen (Excel, Access, SPSS, ...)
+- Tabel kopi&#235;ren en plakken in inputtabblad eigen Excel
+- Excel-formules bewerken de data
+- Tabel/uitkomst uit outputtabblad overnemen/kopi&#235;ren/inlezen
+
+Arbeidsintensief en gevoelig voor incidentele fouten.
+
+
+Inlezen 1/3
+========================================================
+
+Een Excel bestand
+
+```{r echo=TRUE}
+xlsx_bestand <- system.file(
+    "readTest.xlsx", 
+    package = "openxlsx")
+
+xlsx_bestand
+```
+
+Bestand bekijken in Excel
+
+```{r eval=FALSE, echo=TRUE}
+openxlsx::openXL(xlsx_bestand)
+```
+
+
+Inlezen 2/3
+========================================================
+
+Tabel uit bestand inlezen
+
+```{r echo=TRUE}
+input <- openxlsx::read.xlsx(
+    xlsx_bestand
+    , sheet = 3
+    , skipEmptyRows = TRUE
+    , detectDates = TRUE)
+
+head(input)
+```
+
+
+Inlezen 3/3
+========================================================
+
+```{r echo=FALSE}
+write.csv(x = c(x = 1:10), paste0(tempdir(),"\\","bron_2019-01-01.tmp"))
+write.csv(x = c(x = 2:11), paste0(tempdir(),"\\","bron_2019-01-02.tmp"))
+write.csv(x = c(x = 3:12), paste0(tempdir(),"\\","bron_2019-01-03.tmp"))
+```
+
+Werken met bestanden
+
+```{r echo=TRUE}
+bestanden <- list.files(path = tempdir(), 
+                        pattern = ".tmp")
+bestanden
+
+bestand <- tail(sort(bestanden), 1)
+bestand
+
+paste0(tempdir(), "\\", bestand)
+```
+
+
+Bewerken 1/2
+========================================================
+
+Aggregeren op periode
+
+```{r, echo=TRUE}
+library(dplyr)
+
+output <- input %>%
+    mutate(Period = substr(Date, 1, 7),
+           Day    = substr(Date, 9,10)) %>%
+    group_by(Period) %>%
+    summarize(sumValue = 
+                  sum(value, na.rm = TRUE))
+head(output)
+```
+
+
+Bewerken 2/2
+========================================================
+
+Analyseren
+
+```{r, echo=TRUE, fig.width=8, fig.height=8, fig.align='center'}
+plot(x = as.factor(output$Period), 
+     y = output$sumValue)
+```
+
+
+Wegschrijven 1/2
+========================================================
+
+```{r, eval=FALSE, echo=TRUE}
+dir <- tempdir()
+
+# simpel wegschrijven naar een CSV
+write.csv2(
+    output, 
+    file = paste0(dir,"\\","verwerkt.csv"))
+
+# simpel wegschrijven naar een Excel
+openxlsx::write.xlsx(
+    output, 
+    file = paste0(dir,"\\","verwerkt.xlsx"))
+```
+
+.
+
+Hoe ziet die Excel er uit?
+
+```{r, eval=FALSE, echo=FALSE}
+# in Excel bekijken (veel meer mogelijk!)
+wb <- openxlsx::createWorkbook()
+openxlsx::addWorksheet(wb, sheet = "Blad1")
+openxlsx::writeData(wb, sheet = "Blad1", output)
+openxlsx::openXL(wb)
+```
+
+
+Wegschrijven 1/2
+========================================================
+
+Datum in bestandsnaam
+
+```{r echo=TRUE}
+naam  <- "output"
+datum <- format(Sys.Date(), "%Y-%m-%d")
+
+paste0(naam, "_", datum, ".tmp")
+```
+
+
+Disclaimer
+========================================================
+
+Alternatieven met Excel:
+
+- querie&#235;n (Power Query) op bestand of database, met als resultaat een tabel;
+- celverwijzingen naar een bestand en dan telkens bijwerken.
+
+Nadelen van R:
+
+- minder geneigd tijdens het werk "ff" iets aan te passen/verbeteren; 
+- structurele fouten (bv. fout in formule) blijven zitten als ze niet opvallen.
+
+
+Oefenen
+========================================================
+
+<center>
+Voor wie wil: 
+
+**Pak eigen bestanden en ga aan de slag**
+
+<font color="red">(voor wie met productiedata werkt: maak een kopie!)</font>
+
+.
+
+*Ik loop rond om mee te denken en te helpen.*
+</center>
