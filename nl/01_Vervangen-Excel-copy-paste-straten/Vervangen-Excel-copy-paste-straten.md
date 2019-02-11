@@ -1,7 +1,7 @@
 Vervangen Excel copy-paste straten
 ========================================================
 author: Martin van Elp
-date: 2019-01-27
+date: 2019-02-11
 autosize: true
 
 
@@ -38,14 +38,15 @@ Een Excel bestand
 
 ```r
 xlsx_bestand <- system.file(
-    "readTest.xlsx", 
-    package = "openxlsx")
+    "extdata",
+    "datasets.xlsx",
+    package = "readxl")
 
 xlsx_bestand
 ```
 
 ```
-[1] "C:/Users/mvane/Documents/R/win-library/3.5/openxlsx/readTest.xlsx"
+[1] "C:/Users/mvane/Documents/R/win-library/3.5/readxl/extdata/datasets.xlsx"
 ```
 
 Bestand bekijken in Excel
@@ -63,23 +64,23 @@ Tabel uit bestand inlezen
 
 
 ```r
-input <- openxlsx::read.xlsx(
-    xlsx_bestand
-    , sheet = 3
-    , skipEmptyRows = TRUE
-    , detectDates = TRUE)
+input <- readxl::read_excel(
+    xlsx_bestand,
+    sheet = "iris")
 
 head(input)
 ```
 
 ```
-        Date     value      word  bool  wordZ2
-1 2014-04-28 0.8390764 N-U-B-R-A FALSE FALSE-Z
-2 2014-04-27 0.8863800 N-Z-P-S-Y  TRUE  TRUE-Z
-3 2014-04-26 0.5741314 C-G-D-X-H  TRUE  TRUE-Z
-4 2014-04-25 0.1366065      <NA> FALSE FALSE-Z
-5 2014-04-24 0.3692582 B-K-A-O-W  TRUE  TRUE-Z
-6 2014-04-23        NA H-P-G-O-K  TRUE  TRUE-Z
+# A tibble: 6 x 5
+  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+         <dbl>       <dbl>        <dbl>       <dbl> <chr>  
+1          5.1         3.5          1.4         0.2 setosa 
+2          4.9         3            1.4         0.2 setosa 
+3          4.7         3.2          1.3         0.2 setosa 
+4          4.6         3.1          1.5         0.2 setosa 
+5          5           3.6          1.4         0.2 setosa 
+6          5.4         3.9          1.7         0.4 setosa 
 ```
 
 
@@ -115,38 +116,33 @@ paste0(tempdir(), "\\", bestand)
 ```
 
 ```
-[1] "C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpsjShhO\\bron_2019-01-03.tmp"
+[1] "C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpMTgnJl\\bron_2019-01-03.tmp"
 ```
 
 
 Bewerken 1/2
 ========================================================
 
-Aggregeren op periode
+Gemiddelde per soort
 
 
 ```r
 library(dplyr)
 
 output <- input %>%
-    mutate(Period = substr(Date, 1, 7),
-           Day    = substr(Date, 9,10)) %>%
-    group_by(Period) %>%
-    summarize(sumValue = 
-                  sum(value, na.rm = TRUE))
+    group_by(Species) %>%
+    summarize_all(funs(mean(., na.rm = TRUE)))
+
 head(output)
 ```
 
 ```
-# A tibble: 6 x 2
-  Period  sumValue
-  <chr>      <dbl>
-1 2008-08     7.99
-2 2008-09    16.8 
-3 2008-10    15.5 
-4 2008-11    13.4 
-5 2008-12    15.1 
-6 2009-01    14.6 
+# A tibble: 3 x 5
+  Species    Sepal.Length Sepal.Width Petal.Length Petal.Width
+  <chr>             <dbl>       <dbl>        <dbl>       <dbl>
+1 setosa             5.01        3.43         1.46       0.246
+2 versicolor         5.94        2.77         4.26       1.33 
+3 virginica          6.59        2.97         5.55       2.03 
 ```
 
 
@@ -157,8 +153,9 @@ Analyseren
 
 
 ```r
-plot(x = as.factor(output$Period), 
-     y = output$sumValue)
+plot(x = input$Sepal.Length,
+     y = input$Sepal.Width,
+     col = as.factor(input$Species))
 ```
 
 <img src="Vervangen-Excel-copy-paste-straten-figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
@@ -177,9 +174,8 @@ write.csv2(
     file = paste0(dir,"\\","verwerkt.csv"))
 
 # simpel wegschrijven naar een Excel
-openxlsx::write.xlsx(
-    output, 
-    file = paste0(dir,"\\","verwerkt.xlsx"))
+writexl::write_xlsx(output, 
+                    path = paste0(dir,"\\","verwerkt.xlsx"))
 ```
 
 .
@@ -203,7 +199,7 @@ paste0(naam, "_", datum, ".tmp")
 ```
 
 ```
-[1] "output_2019-01-27.tmp"
+[1] "output_2019-02-11.tmp"
 ```
 
 

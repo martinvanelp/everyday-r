@@ -1,7 +1,7 @@
 Vervangen Excel copy-paste straten
 ========================================================
 author: Martin van Elp
-date: 2019-01-27
+date: 2019-02-11
 autosize: true
 
 
@@ -37,8 +37,9 @@ Een Excel bestand
 
 ```{r echo=TRUE}
 xlsx_bestand <- system.file(
-    "readTest.xlsx", 
-    package = "openxlsx")
+    "extdata",
+    "datasets.xlsx",
+    package = "readxl")
 
 xlsx_bestand
 ```
@@ -56,11 +57,9 @@ Inlezen 2/3
 Tabel uit bestand inlezen
 
 ```{r echo=TRUE}
-input <- openxlsx::read.xlsx(
-    xlsx_bestand
-    , sheet = 3
-    , skipEmptyRows = TRUE
-    , detectDates = TRUE)
+input <- readxl::read_excel(
+    xlsx_bestand,
+    sheet = "iris")
 
 head(input)
 ```
@@ -92,17 +91,15 @@ paste0(tempdir(), "\\", bestand)
 Bewerken 1/2
 ========================================================
 
-Aggregeren op periode
+Gemiddelde per soort
 
 ```{r, echo=TRUE}
 library(dplyr)
 
 output <- input %>%
-    mutate(Period = substr(Date, 1, 7),
-           Day    = substr(Date, 9,10)) %>%
-    group_by(Period) %>%
-    summarize(sumValue = 
-                  sum(value, na.rm = TRUE))
+    group_by(Species) %>%
+    summarize_all(funs(mean(., na.rm = TRUE)))
+
 head(output)
 ```
 
@@ -113,8 +110,9 @@ Bewerken 2/2
 Analyseren
 
 ```{r, echo=TRUE, fig.width=8, fig.height=8, fig.align='center'}
-plot(x = as.factor(output$Period), 
-     y = output$sumValue)
+plot(x = input$Sepal.Length,
+     y = input$Sepal.Width,
+     col = as.factor(input$Species))
 ```
 
 
@@ -130,9 +128,8 @@ write.csv2(
     file = paste0(dir,"\\","verwerkt.csv"))
 
 # simpel wegschrijven naar een Excel
-openxlsx::write.xlsx(
-    output, 
-    file = paste0(dir,"\\","verwerkt.xlsx"))
+writexl::write_xlsx(output, 
+                    path = paste0(dir,"\\","verwerkt.xlsx"))
 ```
 
 .
@@ -141,10 +138,7 @@ Hoe ziet die Excel er uit?
 
 ```{r, eval=FALSE, echo=FALSE}
 # in Excel bekijken (veel meer mogelijk!)
-wb <- openxlsx::createWorkbook()
-openxlsx::addWorksheet(wb, sheet = "Blad1")
-openxlsx::writeData(wb, sheet = "Blad1", output)
-openxlsx::openXL(wb)
+openxlsx::openXL(paste0(dir,"\\","verwerkt.xlsx"))
 ```
 
 
