@@ -116,7 +116,7 @@ paste0(tempdir(), "\\", bestand)
 ```
 
 ```
-[1] "C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpMTgnJl\\bron_2019-01-03.tmp"
+[1] "C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpmICnbv\\bron_2019-01-03.tmp"
 ```
 
 
@@ -199,7 +199,7 @@ paste0(naam, "_", datum, ".tmp")
 ```
 
 ```
-[1] "output_2019-02-11.tmp"
+[1] "output_2019-02-17.tmp"
 ```
 
 

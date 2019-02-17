@@ -1,0 +1,149 @@
+Werken met databases
+========================================================
+author: Martin van Elp
+date: 2019-02-17
+autosize: true
+
+
+Agenda
+========================================================
+    
+1. Beginsituatie
+2. Allereerst
+2. Verbinding maken
+3. Queries
+4. Wegschrijven
+5. Disclaimer
+6. Oefenen (facultatief)
+
+&nbsp;
+
+Bron: https://tbradley1013.github.io/2017/08/26/sql-management-in-r/
+
+
+Beginsituatie
+========================================================
+    
+Stereotype verwerking met Access:
+    
+- Open een Access-bestand met tabellen of koppeling met een SQL-database.
+- Data in (gelinkte) tabel filteren en bekijken.
+- Queries maken en draaien voor maatwerkuitkomsten.
+- Tabel kopi&#235;ren en plakken, enzovoort.
+
+Visualisaties, complexe bewerkingen en onderhoud zijn lastig.
+
+
+Allereerst
+========================================================
+
+Bij het werken met databases ga je tegen technische obstakels oplopen.
+
+Bekende problemen:
+
+- Ontbrekende database-drivers;
+- Verschillende versies (32/64-bit) van R, Windows en/of Office geven errors.
+
+Wat kan helpen:
+
+- Installeer de **Microsoft Access Database Engine 2016 Redistributable**
+    (https://www.microsoft.com/en-us/download/details.aspx?id=54920).
+
+
+
+Verbinding maken
+========================================================
+
+Verbinding met voorbeeld database:
+
+```{r echo=FALSE}
+# Voor interactieve sessies
+db <- RODBC::odbcConnectAccess2007("./data/datasets-from-readxl.accdb")
+```
+
+```{r echo=TRUE}
+db <- RODBC::odbcConnectAccess2007("../../data/datasets-from-readxl.accdb")
+
+RODBC::sqlTables(db, tableType = "TABLE")
+```
+
+Netjes verbindingen sluiten:
+```{r echo=TRUE}
+RODBC::odbcCloseAll()
+```
+
+
+Queries 1/n
+========================================================
+
+```{r echo=FALSE}
+db <- RODBC::odbcConnectAccess2007("../../data/datasets-from-readxl.accdb")
+```
+
+```{r echo=TRUE}
+x <- RODBC::sqlQuery(db, "SELECT * FROM iris")
+
+head(x)
+```
+
+
+Queries 2/n
+========================================================
+
+Nieuwe tabel maken met query:
+
+```{r echo=TRUE}
+RODBC::sqlQuery(db, "SELECT Id, Species INTO iris2 FROM iris")
+y <- RODBC::sqlQuery(db, "SELECT * FROM iris2")
+
+head(y)
+```
+
+
+Queries 3/n
+========================================================
+
+En even opruimen:
+
+```{r echo=TRUE}
+RODBC::sqlDrop(db, "iris2")
+```
+
+
+Queries n/n
+========================================================
+
+Schrijf een functie die netjes afsluit:
+
+
+
+    
+Wegschrijven
+========================================================
+
+
+Disclaimer
+========================================================
+    
+- Verwaarloos je SQL vaardigheden niet! Met SQL kun je veel tijdwinst boeken.
+
+- Zijn databases helemaal nieuw voor je en ken je de tidyverse wel al? 
+    Bekijk dan ook *dbplyr*!
+    
+- *RODBC* traag? Onderzoek of je *odbc* kunt gebruiken.
+    
+    
+Oefenen
+========================================================
+    
+<center>
+Voor wie wil: 
+    
+**Pak eigen bestanden en ga aan de slag**
+    
+<font color="red">(voor wie met productiedata werkt: maak een kopie!)</font>
+    
+&nbsp;
+
+*Ik loop rond om mee te denken en te helpen.*
+</center>
