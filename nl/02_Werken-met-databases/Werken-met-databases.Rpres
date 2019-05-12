@@ -12,9 +12,10 @@ Agenda
 2. Allereerst
 2. Verbinding maken
 3. Queries
-4. Wegschrijven
-5. Disclaimer
-6. Oefenen (facultatief)
+4. Query met een functie
+5. Wegschrijven
+6. Disclaimer
+7. Oefenen (facultatief)
 
 &nbsp;
 
@@ -56,13 +57,13 @@ Verbinding maken
 
 Verbinding met voorbeeld database:
 
-```{r echo=FALSE}
-# Voor interactieve sessies
-db <- RODBC::odbcConnectAccess2007("./data/datasets-from-readxl.accdb")
+```{r message=FALSE, include=FALSE}
+file.copy("./data/datasets-from-readxl.accdb", tempdir()) # interactieve sessies
+file.copy("../../data/datasets-from-readxl.accdb", tempdir())
 ```
 
 ```{r echo=TRUE}
-db <- RODBC::odbcConnectAccess2007("../../data/datasets-from-readxl.accdb")
+db <- RODBC::odbcConnectAccess2007(paste0(tempdir(), "/datasets-from-readxl.accdb"))
 
 RODBC::sqlTables(db, tableType = "TABLE")
 ```
@@ -73,11 +74,11 @@ RODBC::odbcCloseAll()
 ```
 
 
-Queries 1/n
+Queries 1/3
 ========================================================
 
 ```{r echo=FALSE}
-db <- RODBC::odbcConnectAccess2007("../../data/datasets-from-readxl.accdb")
+db <- RODBC::odbcConnectAccess2007(paste0(tempdir(), "/datasets-from-readxl.accdb"))
 ```
 
 ```{r echo=TRUE}
@@ -87,7 +88,7 @@ head(x)
 ```
 
 
-Queries 2/n
+Queries 2/3
 ========================================================
 
 Nieuwe tabel maken met query:
@@ -100,7 +101,7 @@ head(y)
 ```
 
 
-Queries 3/n
+Queries 3/3
 ========================================================
 
 En even opruimen:
@@ -110,16 +111,66 @@ RODBC::sqlDrop(db, "iris2")
 ```
 
 
-Queries n/n
+Query met een functie 1/2
 ========================================================
 
 Schrijf een functie die netjes afsluit:
 
+```{r echo=TRUE}
+query_functie <- function(query)
+{
+    db <- RODBC::odbcConnectAccess2007(paste0(tempdir(), 
+                                              "/datasets-from-readxl.accdb"))
+    output <- RODBC::sqlQuery(db, query)
+    RODBC::odbcClose(db)
+    return(output)
+}
 
+head(query_functie("SELECT Id, Species, SepalLength, SepalWidth FROM iris"))
+```
+
+
+Query met een functie 2/2
+========================================================
+
+Functie met parameter:
+
+```{r echo=TRUE}
+query_species <- function(species)
+{
+    query <- paste0("SELECT * FROM iris WHERE Species = '", species, "'")
+    query_functie(query)
+}
+
+head(query_species("virginica"))
+```
 
     
-Wegschrijven
+Wegschrijven 1/2
 ========================================================
+
+Tabel in R, wegschrijven naar database:
+
+```{r echo=TRUE}
+tabel <- data.frame(x = 1:10, y = 11:20)
+
+RODBC::sqlSave(db, tabel, rownames = FALSE)
+
+RODBC::sqlTables(db, tableType = "TABLE")
+```
+
+
+Wegschrijven 2/2
+========================================================
+
+```{r echo=TRUE}
+RODBC::sqlQuery(db, "SELECT x, y, x + y AS z FROM tabel")
+```
+
+```{r echo=FALSE}
+RODBC::sqlDrop(db, "tabel")
+RODBC::odbcCloseAll()
+```
 
 
 Disclaimer

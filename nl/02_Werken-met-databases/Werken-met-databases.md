@@ -12,9 +12,10 @@ Agenda
 2. Allereerst
 2. Verbinding maken
 3. Queries
-4. Wegschrijven
-5. Disclaimer
-6. Oefenen (facultatief)
+4. Query met een functie
+5. Wegschrijven
+6. Disclaimer
+7. Oefenen (facultatief)
 
 &nbsp;
 
@@ -60,22 +61,22 @@ Verbinding met voorbeeld database:
 
 
 ```r
-db <- RODBC::odbcConnectAccess2007("../../data/datasets-from-readxl.accdb")
+db <- RODBC::odbcConnectAccess2007(paste0(tempdir(), "/datasets-from-readxl.accdb"))
 
 RODBC::sqlTables(db, tableType = "TABLE")
 ```
 
 ```
-                                 TABLE_CAT TABLE_SCHEM TABLE_NAME
-1 ..\\..\\data\\datasets-from-readxl.accdb        <NA>   chickwts
-2 ..\\..\\data\\datasets-from-readxl.accdb        <NA>       iris
-3 ..\\..\\data\\datasets-from-readxl.accdb        <NA>     mtcars
-4 ..\\..\\data\\datasets-from-readxl.accdb        <NA>     quakes
-  TABLE_TYPE REMARKS
-1      TABLE    <NA>
-2      TABLE    <NA>
-3      TABLE    <NA>
-4      TABLE    <NA>
+                                                                       TABLE_CAT
+1 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+2 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+3 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+4 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+  TABLE_SCHEM TABLE_NAME TABLE_TYPE REMARKS
+1        <NA>   chickwts      TABLE    <NA>
+2        <NA>       iris      TABLE    <NA>
+3        <NA>     mtcars      TABLE    <NA>
+4        <NA>     quakes      TABLE    <NA>
 ```
 
 Netjes verbindingen sluiten:
@@ -85,7 +86,7 @@ RODBC::odbcCloseAll()
 ```
 
 
-Queries 1/n
+Queries 1/3
 ========================================================
 
 
@@ -108,7 +109,7 @@ head(x)
 ```
 
 
-Queries 2/n
+Queries 2/3
 ========================================================
 
 Nieuwe tabel maken met query:
@@ -139,7 +140,7 @@ head(y)
 ```
 
 
-Queries 3/n
+Queries 3/3
 ========================================================
 
 En even opruimen:
@@ -150,16 +151,116 @@ RODBC::sqlDrop(db, "iris2")
 ```
 
 
-Queries n/n
+Query met een functie 1/2
 ========================================================
 
 Schrijf een functie die netjes afsluit:
 
 
+```r
+query_functie <- function(query)
+{
+    db <- RODBC::odbcConnectAccess2007(paste0(tempdir(), 
+                                              "/datasets-from-readxl.accdb"))
+    output <- RODBC::sqlQuery(db, query)
+    RODBC::odbcClose(db)
+    return(output)
+}
+
+head(query_functie("SELECT Id, Species, SepalLength, SepalWidth FROM iris"))
+```
+
+```
+  Id Species SepalLength SepalWidth
+1  1  setosa         5.1        3.5
+2  2  setosa         4.9        3.0
+3  3  setosa         4.7        3.2
+4  4  setosa         4.6        3.1
+5  5  setosa         5.0        3.6
+6  6  setosa         5.4        3.9
+```
+
+
+Query met een functie 2/2
+========================================================
+
+Functie met parameter:
+
+
+```r
+query_species <- function(species)
+{
+    query <- paste0("SELECT * FROM iris WHERE Species = '", species, "'")
+    query_functie(query)
+}
+
+head(query_species("virginica"))
+```
+
+```
+   Id SepalLength SepalWidth PetalLength PetalWidth   Species
+1 101         6.3        3.3         6.0        2.5 virginica
+2 102         5.8        2.7         5.1        1.9 virginica
+3 103         7.1        3.0         5.9        2.1 virginica
+4 104         6.3        2.9         5.6        1.8 virginica
+5 105         6.5        3.0         5.8        2.2 virginica
+6 106         7.6        3.0         6.6        2.1 virginica
+```
 
     
-Wegschrijven
+Wegschrijven 1/2
 ========================================================
+
+Tabel in R, wegschrijven naar database:
+
+
+```r
+tabel <- data.frame(x = 1:10, y = 11:20)
+
+RODBC::sqlSave(db, tabel, rownames = FALSE)
+
+RODBC::sqlTables(db, tableType = "TABLE")
+```
+
+```
+                                                                       TABLE_CAT
+1 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+2 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+3 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+4 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+5 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+  TABLE_SCHEM TABLE_NAME TABLE_TYPE REMARKS
+1        <NA>   chickwts      TABLE    <NA>
+2        <NA>       iris      TABLE    <NA>
+3        <NA>     mtcars      TABLE    <NA>
+4        <NA>     quakes      TABLE    <NA>
+5        <NA>      tabel      TABLE    <NA>
+```
+
+
+Wegschrijven 2/2
+========================================================
+
+
+```r
+RODBC::sqlQuery(db, "SELECT x, y, x + y AS z FROM tabel")
+```
+
+```
+    x  y  z
+1   1 11 12
+2   2 12 14
+3   3 13 16
+4   4 14 18
+5   5 15 20
+6   6 16 22
+7   7 17 24
+8   8 18 26
+9   9 19 28
+10 10 20 30
+```
+
+
 
 
 Disclaimer
