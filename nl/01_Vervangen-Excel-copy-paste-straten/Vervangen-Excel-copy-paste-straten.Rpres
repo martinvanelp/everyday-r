@@ -1,7 +1,7 @@
 Vervangen Excel copy-paste straten
 ========================================================
 author: Martin van Elp
-date: 2019-02-11
+date: 2019-05-18
 autosize: true
 
 
@@ -13,7 +13,10 @@ Agenda
 3. Bewerken
 4. Wegschrijven
 5. Disclaimer
-6. Oefenen (facultatief)
+6. Wvttk
+7. Oefenen (facultatief)
+
+Stel vooral vragen. Sommige dingen kan ik meteen interactief laten zien!
 
 
 Beginsituatie
@@ -87,8 +90,21 @@ bestand
 paste0(tempdir(), "\\", bestand)
 ```
 
+Bewerken 1/3
+========================================================
 
-Bewerken 1/2
+Eenvoudige bewerking
+
+```{r, echo=TRUE}
+output <- input
+output$Sepal2 <- output$Sepal.Length * output$Sepal.Width
+output$Petal2 <- output$Petal.Length * output$Petal.Width
+
+head(output)
+```
+
+
+Bewerken 2/3
 ========================================================
 
 Gemiddelde per soort
@@ -100,11 +116,11 @@ output <- input %>%
     group_by(Species) %>%
     summarize_all(funs(mean(., na.rm = TRUE)))
 
-head(output)
+output
 ```
 
 
-Bewerken 2/2
+Bewerken 3/3
 ========================================================
 
 Analyseren
@@ -142,7 +158,7 @@ openxlsx::openXL(paste0(dir,"\\","verwerkt.xlsx"))
 ```
 
 
-Wegschrijven 1/2
+Wegschrijven 2/2
 ========================================================
 
 Datum in bestandsnaam
@@ -167,6 +183,9 @@ Nadelen van R:
 
 - minder geneigd tijdens het werk "ff" iets aan te passen/verbeteren; 
 - structurele fouten (bv. fout in formule) blijven zitten als ze niet opvallen.
+
+Wvttk
+========================================================
 
 
 Oefenen

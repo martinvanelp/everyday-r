@@ -1,7 +1,7 @@
 Vervangen Excel copy-paste straten
 ========================================================
 author: Martin van Elp
-date: 2019-02-11
+date: 2019-05-18
 autosize: true
 
 
@@ -13,7 +13,10 @@ Agenda
 3. Bewerken
 4. Wegschrijven
 5. Disclaimer
-6. Oefenen (facultatief)
+6. Wvttk
+7. Oefenen (facultatief)
+
+Stel vooral vragen. Sommige dingen kan ik meteen interactief laten zien!
 
 
 Beginsituatie
@@ -116,11 +119,37 @@ paste0(tempdir(), "\\", bestand)
 ```
 
 ```
-[1] "C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpmICnbv\\bron_2019-01-03.tmp"
+[1] "C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpKK2fZT\\bron_2019-01-03.tmp"
+```
+
+Bewerken 1/3
+========================================================
+
+Eenvoudige bewerking
+
+
+```r
+output <- input
+output$Sepal2 <- output$Sepal.Length * output$Sepal.Width
+output$Petal2 <- output$Petal.Length * output$Petal.Width
+
+head(output)
+```
+
+```
+# A tibble: 6 x 7
+  Sepal.Length Sepal.Width Petal.Length Petal.Width Species Sepal2 Petal2
+         <dbl>       <dbl>        <dbl>       <dbl> <chr>    <dbl>  <dbl>
+1          5.1         3.5          1.4         0.2 setosa    17.8  0.280
+2          4.9         3            1.4         0.2 setosa    14.7  0.280
+3          4.7         3.2          1.3         0.2 setosa    15.0  0.26 
+4          4.6         3.1          1.5         0.2 setosa    14.3  0.3  
+5          5           3.6          1.4         0.2 setosa    18    0.280
+6          5.4         3.9          1.7         0.4 setosa    21.1  0.68 
 ```
 
 
-Bewerken 1/2
+Bewerken 2/3
 ========================================================
 
 Gemiddelde per soort
@@ -133,7 +162,7 @@ output <- input %>%
     group_by(Species) %>%
     summarize_all(funs(mean(., na.rm = TRUE)))
 
-head(output)
+output
 ```
 
 ```
@@ -146,7 +175,7 @@ head(output)
 ```
 
 
-Bewerken 2/2
+Bewerken 3/3
 ========================================================
 
 Analyseren
@@ -158,7 +187,7 @@ plot(x = input$Sepal.Length,
      col = as.factor(input$Species))
 ```
 
-<img src="Vervangen-Excel-copy-paste-straten-figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
+<img src="Vervangen-Excel-copy-paste-straten-figure/unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" />
 
 
 Wegschrijven 1/2
@@ -185,7 +214,7 @@ Hoe ziet die Excel er uit?
 
 
 
-Wegschrijven 1/2
+Wegschrijven 2/2
 ========================================================
 
 Datum in bestandsnaam
@@ -199,7 +228,7 @@ paste0(naam, "_", datum, ".tmp")
 ```
 
 ```
-[1] "output_2019-02-17.tmp"
+[1] "output_2019-05-18.tmp"
 ```
 
 
@@ -215,6 +244,9 @@ Nadelen van R:
 
 - minder geneigd tijdens het werk "ff" iets aan te passen/verbeteren; 
 - structurele fouten (bv. fout in formule) blijven zitten als ze niet opvallen.
+
+Wvttk
+========================================================
 
 
 Oefenen

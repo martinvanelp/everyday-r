@@ -1,7 +1,7 @@
 Werken met databases
 ========================================================
 author: Martin van Elp
-date: 2019-02-17
+date: 2019-05-18
 autosize: true
 
 
@@ -15,7 +15,10 @@ Agenda
 4. Query met een functie
 5. Wegschrijven
 6. Disclaimer
-7. Oefenen (facultatief)
+7. Wvttk
+8. Oefenen (facultatief)
+
+Stel vooral vragen. Sommige dingen kan ik meteen interactief laten zien!
 
 &nbsp;
 
@@ -68,10 +71,10 @@ RODBC::sqlTables(db, tableType = "TABLE")
 
 ```
                                                                        TABLE_CAT
-1 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
-2 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
-3 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
-4 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+1 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
+2 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
+3 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
+4 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
   TABLE_SCHEM TABLE_NAME TABLE_TYPE REMARKS
 1        <NA>   chickwts      TABLE    <NA>
 2        <NA>       iris      TABLE    <NA>
@@ -224,11 +227,11 @@ RODBC::sqlTables(db, tableType = "TABLE")
 
 ```
                                                                        TABLE_CAT
-1 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
-2 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
-3 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
-4 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
-5 C:\\Users\\mvane\\AppData\\Local\\Temp\\Rtmp0ME3vv\\datasets-from-readxl.accdb
+1 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
+2 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
+3 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
+4 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
+5 C:\\Users\\mvane\\AppData\\Local\\Temp\\RtmpaAxRYV\\datasets-from-readxl.accdb
   TABLE_SCHEM TABLE_NAME TABLE_TYPE REMARKS
 1        <NA>   chickwts      TABLE    <NA>
 2        <NA>       iris      TABLE    <NA>
@@ -272,7 +275,11 @@ Disclaimer
     Bekijk dan ook *dbplyr*!
     
 - *RODBC* traag? Onderzoek of je *odbc* kunt gebruiken.
-    
+
+
+Wvttk
+========================================================
+
     
 Oefenen
 ========================================================
