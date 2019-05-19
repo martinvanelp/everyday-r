@@ -1,7 +1,7 @@
 Vervangen Excel copy-paste straten
 ========================================================
 author: Martin van Elp
-date: 2019-05-18
+date: 2019-05-19
 autosize: true
 
 
@@ -12,11 +12,11 @@ Agenda
 2. Inlezen
 3. Bewerken
 4. Wegschrijven
-5. Disclaimer
+5. Alles tezamen
 6. Wvttk
 7. Oefenen (facultatief)
 
-Stel vooral vragen. Sommige dingen kan ik meteen interactief laten zien!
+Stel vragen! Sommige dingen laat ik dan meteen interactief zien of anders later.
 
 
 Beginsituatie
@@ -33,7 +33,7 @@ Stereotype verwerking met Excel:
 Arbeidsintensief en gevoelig voor incidentele fouten.
 
 
-Inlezen 1/3
+Inlezen 1/5
 ========================================================
 
 Een Excel bestand
@@ -54,7 +54,7 @@ openxlsx::openXL(xlsx_bestand)
 ```
 
 
-Inlezen 2/3
+Inlezen 2/5
 ========================================================
 
 Tabel uit bestand inlezen
@@ -68,7 +68,43 @@ head(input)
 ```
 
 
-Inlezen 3/3
+Inlezen 3/5
+========================================================
+
+Nog een Excel bestand
+
+```{r echo=TRUE}
+xlsx_bestand2 <- system.file(
+    "readTest.xlsx", 
+    package = "openxlsx")
+
+xlsx_bestand2
+```
+
+Bestand bekijken in Excel
+
+```{r eval=FALSE, echo=TRUE}
+openxlsx::openXL(xlsx_bestand2)
+```
+
+
+Inlezen 4/5
+========================================================
+
+Tabel uit bestand inlezen
+
+```{r echo=TRUE}
+input2 <- openxlsx::read.xlsx(
+    xlsx_bestand2
+    , sheet = 3
+    , skipEmptyRows = TRUE
+    , detectDates = TRUE)
+
+head(input2)
+```
+
+
+Inlezen 5/5
 ========================================================
 
 ```{r echo=FALSE}
@@ -112,11 +148,11 @@ Gemiddelde per soort
 ```{r, echo=TRUE}
 library(dplyr)
 
-output <- input %>%
+output2 <- output %>%
     group_by(Species) %>%
     summarize_all(funs(mean(., na.rm = TRUE)))
 
-output
+output2
 ```
 
 
@@ -132,7 +168,7 @@ plot(x = input$Sepal.Length,
 ```
 
 
-Wegschrijven 1/2
+Wegschrijven 1/3
 ========================================================
 
 ```{r, eval=FALSE, echo=TRUE}
@@ -140,11 +176,11 @@ dir <- tempdir()
 
 # simpel wegschrijven naar een CSV
 write.csv2(
-    output, 
+    output2, 
     file = paste0(dir,"\\","verwerkt.csv"))
 
 # simpel wegschrijven naar een Excel
-writexl::write_xlsx(output, 
+writexl::write_xlsx(output2, 
                     path = paste0(dir,"\\","verwerkt.xlsx"))
 ```
 
@@ -152,13 +188,12 @@ writexl::write_xlsx(output,
 
 Hoe ziet die Excel er uit?
 
-```{r, eval=FALSE, echo=FALSE}
-# in Excel bekijken (veel meer mogelijk!)
+```{r, eval=FALSE, echo=TRUE}
 openxlsx::openXL(paste0(dir,"\\","verwerkt.xlsx"))
 ```
 
 
-Wegschrijven 2/2
+Wegschrijven 2/3
 ========================================================
 
 Datum in bestandsnaam
@@ -168,6 +203,51 @@ naam  <- "output"
 datum <- format(Sys.Date(), "%Y-%m-%d")
 
 paste0(naam, "_", datum, ".tmp")
+```
+
+
+Wegschrijven 3/3
+========================================================
+
+Het package **openxlsx** biedt veel meer mogelijkheden:
+
+- Layout wijzigen, zoals kleuren en tekstversiering;
+- Conditionele opmaak
+- ...en meer.
+
+Zo kun je dus ook output voor maatwerk maken, zonder zelf in Excel te werken.
+
+Nieuwsgierig?
+
+```{r eval=FALSE, echo=TRUE}
+?openxlsx
+```
+
+
+Alles tezamen
+========================================================
+
+```{r, eval=FALSE, echo=TRUE}
+library(dplyr)
+
+# verwijzing naar het bronbestand 
+xlsx_bestand <- system.file("extdata", "datasets.xlsx", package = "readxl")
+
+# bronbestand inlezen
+input <- readxl::read_excel(xlsx_bestand, sheet = "iris")
+
+# input bewerken
+output <- input %>%
+    mutate(Sepal2 = Sepal.Length * Sepal.Width,
+           Petal2 = Petal.Length * Petal.Width) %>%
+    group_by(Species) %>%
+    summarize_all(funs(mean(., na.rm = TRUE)))
+
+# output wegschrijven
+dir <- tempdir()
+datum <- format(Sys.Date(), "%Y-%m-%d")
+
+writexl::write_xlsx(output, path = paste0(dir,"\\","verwerkt_", datum, ".xlsx"))
 ```
 
 
@@ -186,6 +266,11 @@ Nadelen van R:
 
 Wvttk
 ========================================================
+
+
+
+
+
 
 
 Oefenen
